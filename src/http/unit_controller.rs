@@ -126,7 +126,7 @@ pub fn handle_view_unit_tech(method: &str, route: &str, pool: Rc<PostgrePool>) -
     };
     let tech_dao = tech::TechDaoImpl::new(pool);
     match tech_dao.get_by_unit_id(arg) {
-        Ok(tech) => Response::ok(tech_pages::table_page_view(tech)),
+        Ok(tech) => Response::ok(tech_pages::table_page_view_unit(tech)),
         Err(e) => Response::internal_server_error(&e.to_string()),
     }
 }

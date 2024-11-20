@@ -88,7 +88,7 @@ impl EmployeeDAOImpl {
         Ok(())
     }
 
-    fn update(&self, employee: &Employee) -> Result<(), Error> {
+    pub fn update(&self, employee: &Employee) -> Result<(), Error> {
         let mut conn = self.pool.get().unwrap();
         let rows_affected = conn.execute(
             Self::UPDATE,

@@ -47,6 +47,9 @@ pub fn handle_transfer_add(
         Ok(data) => data,
         Err(e) => return Response::internal_server_error(&e.to_string()),
     };
+    println!("Tech: {:?}", tech);
+    println!("Units: {:?}", units);
+    println!("Room: {:?}", rooms);
 
     if method == "GET" {
         return Response::ok(transfer_pages::add_form_get(
@@ -178,6 +181,10 @@ pub fn handle_transfer_edit(
         Ok(data) => data,
         Err(e) => return Response::internal_server_error(&e.to_string()),
     };
+    println!("Tech: {:?}", tech);
+    println!("Units: {:?}", units);
+    println!("Room: {:?}", rooms);
+    println!("Transfer: {:?}", transfer);
     if method == "GET" {
         return Response::ok(transfer_pages::edit_form_get(
             tech,

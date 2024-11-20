@@ -1,6 +1,6 @@
 use super::base_page::base_template;
 use super::Message;
-use crate::model::dao::tech::Tech;
+use crate::model::dao::tech::{Tech, TechEmployee, TechUnit};
 use maud::{html, Markup};
 
 pub fn table_page(tech_list: Vec<Tech>) -> Markup {
@@ -50,47 +50,74 @@ pub fn table_page(tech_list: Vec<Tech>) -> Markup {
 }
 
 
-pub fn table_page_view(tech_list: Vec<Tech>) -> Markup {
+pub fn table_page_view_employee(tech_list: Vec<TechEmployee>) -> Markup {
     let content = html! {
-        h1 { "Tech list" }
+        h1 { "Tech by employee" }
 
         table border="1" {
             thead {
                 tr {
-                    th { "ID" }
-                    th { "Inventory Number" }
+                    th { "Date" }
+                    th { "First name" }
+                    th { "Middle name" }
+                    th { "Last name" }
+                    th { "Job title" }
+                    th { "Inventory number" }
                     th { "Name" }
                     th { "Model" }
-                    th { "Acquisition Date" }
-                    th { "Actions" }
                 }
             }
             tbody {
                 @for tech in tech_list {
                     tr {
-                        td { (tech.id()) }
+                        td { (tech.date) }
+                        td { (tech.first_name) }
+                        td { (tech.middle_name) }
+                        td { (tech.last_name) }
+                        td { (tech.job_title) }
                         td { (tech.inventory_number) }
                         td { (tech.name) }
                         td { (tech.model) }
-                        td { (tech.acquisition_date) }
-                        td {
-                            form action={(format!("/delete-tech/{}", tech.id()))} method="POST" {
-                                input type="hidden" name="_method" value="DELETE" ;
-                                button type="submit" { "Delete" }
-                            }
-
-                            form action={(format!("/edit-tech/{}", tech.id()))} method="GET" {
-                                button type="submit" { "Edit" }
-                            }
-                        }
                     }
                 }
             }
         }
     };
 
-    base_template("Tech", content)
+    base_template("Tech by employee", content)
 }
+
+pub fn table_page_view_unit(tech_list: Vec<TechUnit>) -> Markup {
+    let content = html! {
+        h1 { "Tech by unit" }
+
+        table border="1" {
+            thead {
+                tr {
+                    th { "Unit name" }
+                    th { "Date" }
+                    th { "Inventory number" }
+                    th { "Name" }
+                    th { "Model" }
+                }
+            }
+            tbody {
+                @for tech in tech_list {
+                    tr {
+                        td { (tech.unit_name) }
+                        td { (tech.date) }
+                        td { (tech.inventory_number) }
+                        td { (tech.name) }
+                        td { (tech.model) }
+                    }
+                }
+            }
+        }
+    };
+
+    base_template("Tech by unit", content)
+}
+
 
 
 fn input_form_add(message: Markup) -> Markup {

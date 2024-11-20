@@ -12,6 +12,54 @@ pub struct Tech {
     pub price: i32,
 }
 
+#[derive(Debug)]
+pub struct TechUnit {
+    pub unit_name: String,
+    pub date: NaiveDate,
+    pub inventory_number: i32,
+    pub name: String,
+    pub model: String,
+}
+
+impl TechUnit {
+    fn from_row(row: Row) -> Result<Self, Error> {
+        Ok(Self {
+            unit_name: row.get(0),
+            date: row.get(1),
+            inventory_number: row.get(2),
+            name: row.get(3),
+            model: row.get(4),
+        })
+    }
+}
+
+#[derive(Debug)]
+pub struct TechEmployee {
+    pub date: NaiveDate,
+    pub first_name: String,
+    pub middle_name: String,
+    pub last_name: String,
+    pub job_title: String,
+    pub inventory_number: i32,
+    pub name: String,
+    pub model: String,
+}
+
+impl TechEmployee {
+    fn from_row(row: Row) -> Result<Self, Error> {
+        Ok(Self {
+            date: row.get(0),
+            first_name: row.get(1),
+            middle_name: row.get(2),
+            last_name: row.get(3),
+            job_title: row.get(4),
+            inventory_number: row.get(5),
+            name: row.get(6),
+            model: row.get(7)
+        })
+    }
+}
+
 impl Tech {
     fn from_row(row: Row) -> Result<Tech, Error> {
         Ok(Tech {
@@ -54,7 +102,7 @@ impl Tech {
         name: &str,
         model: &str,
         acquisition_date: NaiveDate,
-        price: i32
+        price: i32,
     ) -> Tech {
         Tech {
             id: None,
@@ -62,7 +110,7 @@ impl Tech {
             name: name.into(),
             model: model.into(),
             acquisition_date,
-            price
+            price,
         }
     }
 }
@@ -135,20 +183,20 @@ impl TechDaoImpl {
         Ok(())
     }
 
-    pub fn get_by_unit_id(&self, unit_id: i32) -> Result<Vec<Tech>, Error> {
+    pub fn get_by_unit_id(&self, unit_id: i32) -> Result<Vec<TechUnit>, Error> {
         let mut conn = self.pool.get().unwrap();
         let mut all_unit = vec![];
         for row in conn.query(Self::FIND_BY_UNIT_ID, &[&unit_id])? {
-            all_unit.push(Tech::from_row(row)?);
+            all_unit.push(TechUnit::from_row(row)?);
         }
         Ok(all_unit)
     }
 
-    pub fn get_by_employee_id(&self, employee_id: i32) -> Result<Vec<Tech>, Error> {
+    pub fn get_by_employee_id(&self, employee_id: i32) -> Result<Vec<TechEmployee>, Error> {
         let mut conn = self.pool.get().unwrap();
         let mut all_unit = vec![];
-        for row in conn.query(Self::FIND_BY_UNIT_ID, &[&employee_id])? {
-            all_unit.push(Tech::from_row(row)?);
+        for row in conn.query(Self::FIND_BY_EMPLOYEE_ID, &[&employee_id])? {
+            all_unit.push(TechEmployee::from_row(row)?);
         }
         Ok(all_unit)
     }
@@ -161,33 +209,58 @@ impl TechDaoImpl {
         "SELECT id, inventory_number, name, model, acquisition_date, price FROM tech WHERE id = $1";
     const DELETE: &'static str = "DELETE FROM tech WHERE id = $1";
 
-    const FIND_BY_UNIT_ID: &'static str = r#"SELECT u.full_name AS unit_name,
-        t.inventory_number,
-        t.name AS tech_name,
+    const FIND_BY_UNIT_ID: &'static str = r#"SELECT 
+        u.full_name AS unit_name,       
+        tt.transfer_date AS transfer_date,
+        t.inventory_number,          
+        t.name,                           
         t.model
     FROM 
-        tech t
+        transfer tt
     JOIN 
-        transfer tr ON tr.tech_id = t.id
+        unit u ON tt.employee_id = u.id  
     JOIN 
-        employee e ON tr.employee_id = e.id
-    JOIN 
-        unit u ON e.unit_id = u.unit_number
+        tech t ON tt.tech_id = t.id  
     WHERE 
-        u.id = $1"#;
+        u.id = $1    
+        AND tt.transfer_date <= CURRENT_DATE 
+        AND tt.id = (
+    	    SELECT id
+    	    FROM transfer
+    	    WHERE tech_id = tt.tech_id
+    	    AND transfer_date <= CURRENT_DATE
+    	    ORDER BY transfer_date DESC
+    	    LIMIT 1
+	    )
+    ORDER BY 
+        tt.transfer_date DESC;  "#;
 
-    const FIND_BY_EMPLOYEE_ID: &'static str = r#"SELECT u.full_name AS unit_name,
-        t.inventory_number,
-        t.name AS tech_name,
-        t.model
+    const FIND_BY_EMPLOYEE_ID: &'static str = r#"SELECT 
+        tt.transfer_date,                                                           
+        e.first_name,
+	    e.middle_name,
+	    e.last_name AS employee_name,  
+        e.job_title,                                                                
+        t.inventory_number,      
+        t.name,                                                       
+        t.model                                                          
     FROM 
-        tech t
+        transfer tt
     JOIN 
-        transfer tr ON tr.tech_id = t.id
+        employee e ON tt.employee_id = e.id  
     JOIN 
-        employee e ON tr.employee_id = e.id
-    JOIN 
-        unit u ON e.unit_id = u.unit_number
+        tech t ON tt.tech_id = t.id      
     WHERE 
-        e.id = $1"#;
+        e.id = $1                    
+        AND tt.transfer_date <= CURRENT_DATE
+        AND tt.id = (
+    	    SELECT id
+    	    FROM transfer
+    	    WHERE tech_id = tt.tech_id
+    	    AND transfer_date <= CURRENT_DATE
+    	    ORDER BY transfer_date DESC
+    	    LIMIT 1
+	    ) 
+    ORDER BY 
+        tt.transfer_date DESC;"#;
 }

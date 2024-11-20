@@ -43,7 +43,7 @@ pub fn handle_employee_add(
         let is_accountable: bool = body.get("is_accountable").is_some();
         if is_supervisor == is_accountable {
             let message = Message::new(
-                "The employee has to be either a supervisor or a accoutanble",
+                "The employee has to be either a supervisor or an accoutanble",
                 MK::Notify,
             );
             return Response::ok(employee_pages::add_form_post(units, message));
@@ -112,7 +112,7 @@ pub fn handle_employee_edit(
             let is_accountable: bool = body.get("is_accountable").is_some();
             if is_supervisor == is_accountable {
                 let message = Message::new(
-                    "The employee has to be either a supervisor or a accoutanble",
+                    "The employee has to be either a supervisor or an accoutanble",
                     MK::Notify,
                 );
                 return Response::ok(employee_pages::add_form_post(units, message));
@@ -137,7 +137,8 @@ pub fn handle_employee_edit(
                 unit_id,
             );
 
-            let message = match employee_dao.insert(&mut employee) {
+            employee.set_id(arg);
+            let message = match employee_dao.update(&mut employee) {
                 Ok(()) => Message::new("Updated employee", MK::Notify),
                 Err(_) => Message::new("Error on adding new employee", MK::Error),
             };
@@ -181,7 +182,7 @@ pub fn handle_view_employee_tech(method: &str, route: &str, pool: Rc<PostgrePool
     };
     let tech_dao = tech::TechDaoImpl::new(pool);
     match tech_dao.get_by_employee_id(arg) {
-        Ok(tech) => Response::ok(tech_pages::table_page_view(tech)),
+        Ok(tech) => Response::ok(tech_pages::table_page_view_employee(tech)),
         Err(e) => Response::internal_server_error(&e.to_string()),
     }
 }

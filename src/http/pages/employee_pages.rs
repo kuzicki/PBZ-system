@@ -136,11 +136,11 @@ fn input_form_edit(employee: &Employee, units: Vec<Unit>, message: Markup) -> Ma
             br; br;
 
             label for="is_supervisor" { "Is supervisor:" }
-            input type="checkbox" id="is_supervisor" name="is_supervisor" checked=(employee.is_supervisor);
+            input type="checkbox" id="is_supervisor" name="is_supervisor" checked[employee.is_supervisor];
             br; br;
 
             label for="is_accountable" { "Is accountable:" }
-            input type="checkbox" id="is_accountable" name="is_accountable" checked=(employee.is_accountable);
+            input type="checkbox" id="is_accountable" name="is_accountable" checked[employee.is_accountable];
             br; br;
 
             label for="job_title" { "Job title:" }
@@ -149,10 +149,7 @@ fn input_form_edit(employee: &Employee, units: Vec<Unit>, message: Markup) -> Ma
             label for="unit" { "Unit: "}
             select id="unit" name="unit" required {
                 @for unit in units {
-                    option value=(unit.id()) {
-                        @if unit.id() == employee.unit_id {
-                            "Now in: "
-                        }
+                    option value=(unit.id()) selected[unit.id() == employee.unit_id]{
                         (unit.full_name)
                     }
                 }
