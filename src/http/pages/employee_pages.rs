@@ -119,7 +119,7 @@ pub fn table_page_view(employee_list: Vec<Employee>) -> Markup {
 }
 
 fn input_form_edit(employee: &Employee, units: Vec<Unit>, message: Markup) -> Markup {
-    html! {
+    let content = html! {
         h1 { "Edit Employee" }
 
         form action=({format!("/edit-employee/{}", employee.id())}) method="POST" {
@@ -164,7 +164,8 @@ fn input_form_edit(employee: &Employee, units: Vec<Unit>, message: Markup) -> Ma
 
         a href="/employee" { "Back to Employee List" }
 
-    }
+    };
+    base_template("Edit employee", content)
 }
 
 pub fn edit_form_get(employee: &Employee, units: Vec<Unit>) -> Markup {

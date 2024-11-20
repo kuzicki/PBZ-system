@@ -218,7 +218,9 @@ impl TechDaoImpl {
     FROM 
         transfer tt
     JOIN 
-        unit u ON tt.employee_id = u.id  
+        employee e ON tt.employee_id = e.id  -- Correct join to the employee table
+    JOIN 
+        unit u ON e.unit_id = u.id           -- Correct join to the unit table    
     JOIN 
         tech t ON tt.tech_id = t.id  
     WHERE 

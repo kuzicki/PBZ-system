@@ -104,7 +104,7 @@ pub fn add_form_post(message: Message) -> Markup {
 }
 
 fn input_form_add(message: Markup) -> Markup {
-    html! {
+    let content = html! {
         h1 { "Add new Unit" }
         form action="/add-unit" method="POST" {
                 label for="unit_number" { "Unit Number:" }
@@ -123,7 +123,8 @@ fn input_form_add(message: Markup) -> Markup {
         br; br;
 
         a href="/unit" { "Back to Unit List" }
-    }
+    };
+    base_template("Add unit", content)
 }
 
 pub fn edit_form_get(unit: &Unit) -> Markup {
@@ -135,7 +136,7 @@ pub fn edit_form_post(unit: &Unit, message: Message) -> Markup {
 }
 
 fn input_form_edit(unit: &Unit, message: Markup) -> Markup {
-    html! {
+    let content = html! {
         h1 { "Edit Unit" }
 
         form action=({format!("/edit-unit/{}", unit.id())}) method="POST" {
@@ -158,7 +159,8 @@ fn input_form_edit(unit: &Unit, message: Markup) -> Markup {
 
         a href="/unit" { "Back to Unit List" }
 
-    }
+    };
+    base_template("Edit unit", content)
 }
 
 

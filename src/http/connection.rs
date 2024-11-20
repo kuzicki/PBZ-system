@@ -1,4 +1,4 @@
-use super::{controller, tech_controller, unit_controller, employee_controller, Response};
+use super::{controller, employee_controller, tech_controller, unit_controller, Response};
 use crate::model::pool::PostgrePool;
 use std::collections::HashMap;
 use std::rc::Rc;
@@ -17,7 +17,12 @@ fn parse_form_data(data: &str) -> HashMap<String, String> {
             let mut split = pair.splitn(2, '=');
             Some((
                 split.next()?.to_string(),
-                split.next().unwrap_or("").to_string(),
+                split
+                    .next()
+                    .unwrap_or("")
+                    .replace('+', " ")
+                    .trim()
+                    .to_string(),
             ))
         })
         .collect()

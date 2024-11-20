@@ -159,7 +159,7 @@ pub fn add_form_post(message: Message) -> Markup {
 }
 
 fn input_form_edit(tech: &Tech, message: Markup) -> Markup {
-    html! {
+    let content = html! {
         h1 { "Edit Tech Item" }
 
         form action=({format!("/edit-tech/{}", tech.id())}) method="POST" {
@@ -191,7 +191,8 @@ fn input_form_edit(tech: &Tech, message: Markup) -> Markup {
 
         a href="/tech" { "Back to Tech List" }
 
-    }
+    };
+    base_template("Tech edit", content)
 }
 
 pub fn edit_form_get(tech: &Tech) -> Markup {
