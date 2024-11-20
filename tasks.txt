@@ -1,0 +1,9 @@
+fix the add(make it so you can pick the date)
+fix the edit(add rooms)
+view transfers(with all fields)
+view the latest(sort by lastest and pick the first probably)
+split controllers
+add bootstrap styling
+message position fix
+employee (should be is_supervisor and is_accountable at the same time?)
+delete the plus signs in body
