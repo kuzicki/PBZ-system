@@ -13,6 +13,7 @@ add bootstrap styling x
 delete the plus signs in body x
 
 
+test the view tech tables
 
 message to html change
 
