@@ -1,9 +1,71 @@
-fix the add(make it so you can pick the date)
-fix the edit(add rooms)
-view transfers(with all fields)
-view the latest(sort by lastest and pick the first probably)
-split controllers
-add bootstrap styling
-message position fix
-employee (should be is_supervisor and is_accountable at the same time?)
-delete the plus signs in body
+fix the add(make it so you can pick the date) x
+view transfers(with all fields) maybe x
+split controllers x
+fix the transfer_add x
+
+view the latest(sort by lastest and pick the first probably) x
+employee (should be is_supervisor and is_accountable at the same time?) add check that they aren't equal x
+fix the edit(add rooms) x
+
+add base_template everywhere x
+message position fix x
+add bootstrap styling x
+delete the plus signs in body x
+
+
+
+message to html change
+
+
+don't forget that it's update transfer
+
+
+fix message pos
+
+tech:
+add x
+edit x
+delete x
+unit:
+add x
+delete x
+edit x
+employee:
+add x
+delete x
+edit x
+
+
+
+
+tt.id = (
+    SELECT id
+    FROM transfer
+    WHERE tech_id = tt.tech_id
+    AND transfer_date <= CURRENT_DATE
+    ORDER BY transfer_date DESC
+    LIMIT 1
+)
+
+SELECT 
+    u.full_name AS unit_name,         -- Название подразделения
+    t.inventory_number,               -- Инвентарный номер
+    t.name,                           -- Название техники
+    t.model,                          -- Модель
+    tt.transfer_date AS transfer_date -- Дата передачи
+FROM 
+    transfer tt
+JOIN 
+    unit u ON tt.employee_id = u.id  -- Соединение с подразделением по сотруднику
+JOIN 
+    tech t ON tt.tech_id = t.id     -- Соединение с техникой
+WHERE 
+    u.unit_number = $1              -- Здесь подставляем нужный номер подразделения
+    AND tt.transfer_date <= CURRENT_DATE -- Техника передана до текущей даты
+    AND tt.id = (
+        SELECT MAX(id) 
+        FROM transfer
+        WHERE tech_id = tt.tech_id
+    ) -- Гарантируем, что выбирается последняя передача техники
+ORDER BY 
+    tt.transfer_date DESC;  
