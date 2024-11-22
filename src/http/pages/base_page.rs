@@ -7,7 +7,6 @@ pub fn base_template(title: &str, content: Markup) -> Markup {
             head {
                 title { (title) }
                 style {
-                    // Inline CSS
                     r#"
                     body {
                         font-family: Arial, sans-serif;
@@ -37,17 +36,6 @@ pub fn base_template(title: &str, content: Markup) -> Markup {
                         padding: 20px;
                     }
 
-                    footer {
-                        background-color: #333;
-                        color: white;
-                        padding: 10px 0;
-                        text-align: center;
-                        position: fixed;
-                        width: 100%;
-                        bottom: 0;
-                        height: 50px; /* Keeps space for footer */
-                    }
-
                     table {
                         width: 100%;
                         border-collapse: collapse;
@@ -70,7 +58,7 @@ pub fn base_template(title: &str, content: Markup) -> Markup {
                     tr:hover {
                         background-color: #f5f5f5;
                     }
-                    "# // End of CSS
+                    "#
                 }
             }
             body {
@@ -88,9 +76,6 @@ pub fn base_template(title: &str, content: Markup) -> Markup {
                 }
                 main {
                     (content)
-                }
-                footer {
-                    ""
                 }
             }
         }
@@ -125,9 +110,6 @@ pub fn base_error_template(title: &str, error_name: &str) -> Markup {
                 main {
                     h2 { "An error has occured: "}
                     p {(error_name)}
-                }
-                footer {
-                    p { "Footer information here." }
                 }
             }
         }

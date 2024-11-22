@@ -73,9 +73,9 @@ fn get_body(
         .take(content_length as u64)
         .read_to_string(&mut body)
         .unwrap();
-    println!("Received body:\n{}", body);
+    // println!("Received body:\n{}", body);
     let form_data = parse_form_data(&body);
-    println!("Parsed form data: {:?}", form_data);
+    // println!("Parsed form data: {:?}", form_data);
     return Some(form_data);
 }
 
@@ -157,7 +157,7 @@ fn handle_connection(mut stream: TcpStream, pool: Rc<PostgrePool>) {
 }
 
 pub fn open_connection(pool: Rc<PostgrePool>) {
-    let listener = TcpListener::bind("127.0.0.1:5000").unwrap();
+    let listener = TcpListener::bind("0.0.0.0:5000").unwrap();
 
     for stream in listener.incoming() {
         let stream = stream.unwrap();

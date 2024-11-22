@@ -7,11 +7,14 @@ pub type PostgrePool = Pool<PostgresConnectionManager<NoTls>>;
 
 pub fn create_pool() -> PostgrePool {
     let mut config = Config::new();
+    let user = std::env::var("POSTGRES_USER").expect("POSTGRES_USER must be set");
+    let password = std::env::var("POSTGRES_PASSWORD").expect("POSTGRES_PASSWORD must be set");
+    let dbname = std::env::var("POSTGRES_DB").expect("POSTGRES_DB must be set");
     config
-        .host("localhost")
-        .user("postgres")
-        .password("123")
-        .dbname("PBZ2");
+        .host("db")
+        .user(&user)
+        .password(&password)
+        .dbname(&dbname);
     let manager = PostgresConnectionManager::new(config, NoTls);
 
     Pool::builder()
